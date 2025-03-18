@@ -58,15 +58,25 @@ const logger = pino.pino({
         });
       const keysWithoutTTL = result?.filter((item) => (item?.ttl === -1));
       const oldKeyAccessed = result?.filter((item) => (item?.lastAccessedDays >= 7));
-      const isOldKeysPresent = (oldKeyAccessed?.length || 0) > 0;
+      const oldKeysFound = (oldKeyAccessed?.length || 0);
       const noTTLKeysFound = keysWithoutTTL?.length || 0;
       log1.write(JSON.stringify(keysWithoutTTL));
       log2.write(JSON.stringify(oldKeyAccessed));
       log1.write("\n");
       log2.write("\n");
-      // await writeFile(`run-result.txt`, JSON.stringify(result));  
       logger.info(
-        `<== Result: oldKeysFound=${oldKeyAccessed?.length || 0} noTTLKeysFound=${noTTLKeysFound} - cursor=${cursor} - run=${runs} duration - ${(Date.now() - startTime) / 1000}seconds  ==>`
+        {
+          cursor,
+          runs,
+          oldKeysFound:  oldKeysFound,
+          noTTLKeysFound: noTTLKeysFound,
+          duration: (Date.now() - startTime) / 1000
+        },
+        `Result: oldKeysFound=${
+          oldKeysFound
+        } noTTLKeysFound=${noTTLKeysFound} - cursor=${cursor} - run=${runs} duration - ${
+          (Date.now() - startTime) / 1000
+        }seconds`
       );
     }
 
