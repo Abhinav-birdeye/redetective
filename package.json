@@ -1,0 +1,18 @@
+{
+	"name": "redis-scanner",
+	"version": "1.0.0",
+	"description": "A simple Redis scanner",
+	"type": "module",
+	"scripts": {
+		"start": "tsx watch --env-file=.env src/index.ts"
+	},
+	"devDependencies": {
+		"@types/node": "^22.13.10",
+		"typescript": "^5.8.2"
+	},
+	"dependencies": {
+		"ioredis": "^5.6.0",
+		"tslib": "^2.8.1",
+		"tsx": "^4.19.3"
+	}
+}
