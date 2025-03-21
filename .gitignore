@@ -1,3 +1,5 @@
 .env
 *.txt
 node_modules
+result
+*.zip
