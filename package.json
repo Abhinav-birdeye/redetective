@@ -4,7 +4,9 @@
 	"description": "A simple Redis scanner",
 	"type": "module",
 	"scripts": {
-		"start": "tsx watch --env-file=.env src/index.ts"
+		"start": "tsx watch --env-file=.env src/index.ts",
+		"format": "biome format --write ./src/**",
+		"lint": "biome lint --write ./src/**"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
