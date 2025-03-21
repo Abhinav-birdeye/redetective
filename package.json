@@ -6,7 +6,7 @@
 	"scripts": {
 		"start": "tsx watch --env-file=.env src/index.ts",
 		"format": "biome format --write ./src/**",
-		"lint": "biome lint --write ./src/**"
+		"lint": "biome lint --write --unsafe ./src/**"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",

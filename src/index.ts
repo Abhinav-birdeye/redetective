@@ -1,10 +1,17 @@
-import { createWriteStream } from "fs";
+import { createWriteStream } from "node:fs";
+import { writeFile, readFile } from "node:fs/promises";
 import { initClient } from "./config.js";
 import pino from "pino";
+
+// CONSTANTS
 
 const DAYS_IN_SECONDS = 86400;
 const SCAN_BATCH_SIZE = 5000;
 const SELECTED_DB = Number(process.env.REDIS_DB);
+const DAYS_THRESHOLD = 14;
+const OLD_KEYS_FILENAME = `${SELECTED_DB}-keys-older-${DAYS_THRESHOLD}-days`;
+const NO_TTL_KEYS_FILENAME = `${SELECTED_DB}-keys-no-ttl`;
+
 const logger = pino.pino({
 	transport: {
 		target: "pino-pretty",
@@ -13,14 +20,36 @@ const logger = pino.pino({
 		},
 	},
 });
-// const THIRTY_DAYS_IN_SECONDS = 1 * DAYS_IN_SECONDS;
+
+// HELPER FUNCTIONS
+
+function convertSecondsToDays(seconds: number) {
+	return Math.floor(seconds / DAYS_IN_SECONDS);
+}
+
+async function formatOutputToJson() {
+	const [noTTLData, oldKeysData] = await Promise.all([
+		readFile(`${NO_TTL_KEYS_FILENAME}.txt`, { encoding: "utf-8" }),
+		readFile(`${OLD_KEYS_FILENAME}.txt`, { encoding: "utf-8" }),
+	]);
+	const formattedNoTTLData = noTTLData.split("\n").join().slice(0, -1);
+	const formattedOldKeysData = oldKeysData.split("\n").join().slice(0, -1);
+	await Promise.all([
+		writeFile(`${NO_TTL_KEYS_FILENAME}.json`, formattedNoTTLData),
+		writeFile(`${OLD_KEYS_FILENAME}.json`, formattedOldKeysData),
+	]);
+}
+
+// MAIN PROGRAM
 
 async function main() {
 	const client = await initClient();
 	let cursor = 0;
 	let runs = 0;
-	const log1 = createWriteStream("keys-without-ttl.txt", { flags: "a" });
-	const log2 = createWriteStream("keys-older-than-7-days.txt", { flags: "a" });
+	const log1 = createWriteStream(`${NO_TTL_KEYS_FILENAME}.txt`, {
+		flags: "a",
+	});
+	const log2 = createWriteStream(`${OLD_KEYS_FILENAME}.txt`, { flags: "a" });
 	async function batchProcess() {
 		const startTime = Date.now();
 		const scanResult = await client.scan(cursor, "COUNT", SCAN_BATCH_SIZE);
@@ -46,9 +75,9 @@ async function main() {
 				db: SELECTED_DB,
 				key: commands?.[index]?.[2],
 				lastAccessedSeconds: Math.floor(Number(item?.[1] ?? 0) ?? null),
-				lastAccessedDays: Math.floor(Number(item?.[1] ?? 0) / DAYS_IN_SECONDS),
+				lastAccessedDays: convertSecondsToDays(Number(item?.[1] ?? 0)),
 				ttl,
-				ttlInDays: Math.floor((ttl ?? 0) / DAYS_IN_SECONDS),
+				ttlInDays: convertSecondsToDays(ttl ?? 0),
 			};
 		});
 		const keysWithoutTTL = result?.filter((item) => item?.ttl === -1);
@@ -57,10 +86,12 @@ async function main() {
 		);
 		const oldKeysFound = oldKeyAccessed?.length || 0;
 		const noTTLKeysFound = keysWithoutTTL?.length || 0;
-		log1.write(JSON.stringify(keysWithoutTTL));
-		log2.write(JSON.stringify(oldKeyAccessed));
-		log1.write("\n");
-		log2.write("\n");
+		if (noTTLKeysFound > 0) {
+			log1.write(`${JSON.stringify(keysWithoutTTL)}\n`);
+		}
+		if (oldKeysFound > 0) {
+			log2.write(`${JSON.stringify(oldKeyAccessed)}\n`);
+		}
 		logger.info(
 			{
 				cursor,
@@ -84,6 +115,9 @@ async function main() {
 	} while (cursor !== 0);
 	log1.end();
 	log2.end();
+	// read the file and join the array in new line
+	await formatOutputToJson();
+	await client.quit();
 	logger.info("Exiting process gracefully..");
 	process.exit(0);
 }
