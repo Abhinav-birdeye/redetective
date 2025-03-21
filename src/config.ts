@@ -8,7 +8,7 @@ export const redisConfig = {
 	maxRetriesPerRequest: 1,
 	enableReadyCheck: true,
 	db: Number(process.env.REDIS_DB),
-	commandTimeout: 10000,
+	commandTimeout: 60000,
 	connectTimeout: 10000,
 } satisfies RedisOptions;
 
