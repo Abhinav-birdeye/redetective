@@ -1,8 +1,8 @@
 import type { Cluster, Redis } from "ioredis";
-import { initClusterClient } from "./clusterConfig.js";
-import { initClient } from "./config.js";
-import { logger } from "./logger.js";
-import { tryCatch } from "./try-catch.js";
+import { initClusterClient } from "./utils/clusterConfig.js";
+import { initClient } from "./utils/config.js";
+import { logger } from "./utils/logger.js";
+import { tryCatch } from "./utils/try-catch.js";
 
 interface BatchProcessOptions {
 	cursor: number;

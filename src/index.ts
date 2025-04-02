@@ -1,8 +1,8 @@
 import { createWriteStream, existsSync, mkdirSync } from "node:fs";
 import { writeFile, readFile, unlink } from "node:fs/promises";
-import { initClient } from "./config.js";
-import { DAYS_IN_SECONDS, DIRECTORY, NO_TTL_KEYS_FILENAME_JSON, NO_TTL_KEYS_FILENAME_TXT, OLD_KEYS_FILENAME_JSON, OLD_KEYS_FILENAME_TXT, SCAN_BATCH_SIZE, SELECTED_DB } from "./constants.js";
-import { logger } from "./logger.js";
+import { initClient } from "./utils/config.js";
+import { DAYS_IN_SECONDS, DIRECTORY, NO_TTL_KEYS_FILENAME_JSON, NO_TTL_KEYS_FILENAME_TXT, OLD_KEYS_FILENAME_JSON, OLD_KEYS_FILENAME_TXT, SCAN_BATCH_SIZE, SELECTED_DB } from "./utils/constants.js";
+import { logger } from "./utils/logger.js";
 
 // HELPER FUNCTIONS
 
