@@ -1,16 +1,18 @@
 import { initClusterClient } from "./clusterConfig.js";
 import { initClient } from "./config.js";
 import { logger } from "./logger.js";
+import { tryCatch } from "./try-catch.js";
 
 async function main() {
 	const singleInstanceClient = await initClient();
+	// const clusterClient = await initClusterClient();
+	// const writePipeline = clusterClient.pipeline();
 	let runs = 0;
 	let cursor = 0;
-	const readPipeline = singleInstanceClient.pipeline();
+	const readValuePipeline = singleInstanceClient.pipeline();
+	const ttlPipeline = singleInstanceClient.pipeline();
 
 	async function batchProcess() {
-		const clusterClient = await initClusterClient();
-		const writePipeline = clusterClient.pipeline();
 		const [nextCursor, keysToMigrate] = await singleInstanceClient.scan(
 			cursor,
 			"MATCH",
@@ -19,24 +21,32 @@ async function main() {
 			100,
 		);
 		for (const key of keysToMigrate) {
-			readPipeline.get(key);
+			readValuePipeline.get(key);
+			ttlPipeline.ttl(key);
 		}
-		const result = await readPipeline.exec();
-		const valueOfKeysToMigrate = result?.map((item) => item?.[1]);
-		const error = result?.find((item) => item?.[0] !== null);
+		const { data: pipelineResult, error: pipelineError } = await tryCatch(Promise.all([readValuePipeline.exec(), ttlPipeline.exec()]));
+		if (pipelineError) {
+			logger.error(pipelineError, "Error reading keys");
+			return;
+		}
+		const [valueResult, ttlResult] = pipelineResult;
+		const valueOfKeysToMigrate = valueResult?.map((item) => item?.[1]);
+		const ttlOfKeysToMigrate = ttlResult?.map((item) => item?.[1]);
+		const error = valueResult?.find((item) => item?.[0] !== null) || ttlResult?.find((item) => item?.[0] !== null);
 		if (error) {
 			logger.error(error, "Error reading keys");
 			return;
 		}
-		const oldKeysWithValue = keysToMigrate.map((item, index) => ({ key: item, value: valueOfKeysToMigrate?.[index] }));
+		const oldKeysWithValue = keysToMigrate.map((item, index) => ({ key: item, value: valueOfKeysToMigrate?.[index], ttl: ttlOfKeysToMigrate?.[index] }));
 
-		logger.info({ keysFound: oldKeysWithValue?.length, cursor }, "<== KEYS TO MIGRATE ==>");
+		logger.info({ value: oldKeysWithValue, keysFound: oldKeysWithValue?.length, cursor }, "<== KEYS TO MIGRATE ==>");
 		cursor = Number(nextCursor ?? 0);
-		for (const key of oldKeysWithValue) {
-			writePipeline.set(key.key, key?.value as string);
-		}
-		const writeResult = await writePipeline.exec();
-		logger.info({ writeResult }, "<== WRITE RESULT ==>");
+		return;
+		// for (const key of oldKeysWithValue) {
+		// 	writePipeline.set(key.key, key?.value as string);
+		// }
+		// const writeResult = await writePipeline.exec();
+		// logger.info({ writeResult }, "<== WRITE RESULT ==>");
 	}
 
 	do {
