@@ -1,0 +1,23 @@
+// CONSTANTS
+
+export const DAYS_IN_SECONDS = 86400;
+export const SCAN_BATCH_SIZE = 3000;
+export const SELECTED_DB = Number(process.env.REDIS_DB);
+export const DAYS_THRESHOLD = 14;
+export const DIRECTORY = `result/db${SELECTED_DB}/`;
+export const OLD_KEYS_FILENAME_TXT = `${DIRECTORY}${SELECTED_DB}-keys-older-${DAYS_THRESHOLD}-days.txt`;
+export const NO_TTL_KEYS_FILENAME_TXT = `${DIRECTORY}${SELECTED_DB}-keys-no-ttl.txt`;
+export const OLD_KEYS_FILENAME_JSON = `${DIRECTORY}${SELECTED_DB}-keys-older-${DAYS_THRESHOLD}-days.json`;
+export const NO_TTL_KEYS_FILENAME_JSON = `${DIRECTORY}${SELECTED_DB}-keys-no-ttl.json`;
+
+export const CONSTANTS = {
+	DAYS_IN_SECONDS,
+	SCAN_BATCH_SIZE,
+	SELECTED_DB,
+	DAYS_THRESHOLD,
+	DIRECTORY,
+	OLD_KEYS_FILENAME_TXT,
+	NO_TTL_KEYS_FILENAME_TXT,
+	OLD_KEYS_FILENAME_JSON,
+	NO_TTL_KEYS_FILENAME_JSON,
+};

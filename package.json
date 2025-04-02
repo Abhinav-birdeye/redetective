@@ -5,6 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"start": "tsx watch --env-file=.env src/index.ts",
+		"migrateKeys": "tsx watch --env-file=.env src/migrator.ts",
 		"format": "biome format --write ./src/**",
 		"lint": "biome lint --write --unsafe ./src/**"
 	},
