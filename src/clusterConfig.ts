@@ -1,6 +1,7 @@
 import { Cluster } from "ioredis";
 
 import type { ClusterNode, ClusterOptions } from "ioredis";
+import { logger } from "./logger.js";
 
 export const CLUSTER_NODES = [
 	{
@@ -12,6 +13,7 @@ export const CLUSTER_NODES = [
 export const CLUSTER_OPTIONS = {
 	dnsLookup: (address, callback) => callback(null, address),
 	redisOptions: {
+		enableOfflineQueue: false,
 		commandTimeout: 60000,
 		tls: {},
 		enableAutoPipelining: true,
@@ -23,31 +25,31 @@ export const CLUSTER_OPTIONS = {
 export async function initClusterClient() {
 	const client = new Cluster(CLUSTER_NODES, CLUSTER_OPTIONS);
 	client.on("connecting", () =>
-		console.log("Redis Cluster: Redis client connecting..."),
+		logger.info(`Redis Cluster: Redis client connecting to ${process.env.REDIS_CLUSTER_HOST}...`),
 	);
-	client.on("ready", () => console.log("Redis Cluster: Redis client ready!"));
+	client.on("ready", () => logger.info("Redis Cluster: Redis client ready!"));
 	client.on("reconnecting", () =>
-		console.log("Redis Cluster: Redis client reconnecting..."),
+		logger.info("Redis Cluster: Redis client reconnecting..."),
 	);
 	client.on("error", (error) =>
-		console.log("Redis Cluster: Redis client error", error),
+		logger.error(error, "Redis Cluster: Redis client error"),
 	);
 	client.on("connect", () =>
-		console.log("Redis Cluster: Redis client connected!"),
+		logger.info("Redis Cluster: Redis client connected!"),
 	);
-	client.on("close", () => console.log("Redis Cluster: Redis client closed!"));
-	client.on("end", () => console.log("Redis Cluster: Redis client ended."));
+	client.on("close", () => logger.info("Redis Cluster: Redis client closed!"));
+	client.on("end", () => logger.info("Redis Cluster: Redis client ended."));
 
 	process.on("SIGTERM", () => {
-		console.log("Redis Cluster: Quitting as process exited");
+		logger.info("Redis Cluster: Quitting as process exited");
 		client.quit();
 	});
 	process.on("SIGINT", () => {
-		console.log("Redis Cluster: Quitting as process exited");
+		logger.info("Redis Cluster: Quitting as process exited");
 		client.quit();
 	});
 	process.on("exit", () => {
-		console.log("Redis Cluster: Quitting as process exited");
+		logger.info("Redis Cluster: Quitting as process exited");
 		client.quit();
 	});
 

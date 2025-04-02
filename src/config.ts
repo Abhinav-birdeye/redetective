@@ -1,5 +1,6 @@
 import type { RedisOptions } from "ioredis";
 import { Redis } from "ioredis";
+import { logger } from "./logger.js";
 
 export const redisConfig = {
 	host: process.env.REDIS_HOST,
@@ -15,29 +16,29 @@ export const redisConfig = {
 export async function initClient() {
 	const client = new Redis(redisConfig);
 	client.on("connecting", () =>
-		console.log("Redis: Redis client connecting..."),
+		logger.info(`Redis: Redis client connecting to ${process.env.REDIS_HOST}...`),
 	);
-	client.on("ready", () => console.log("Redis: Redis client ready!"));
+	client.on("ready", () => logger.info("Redis: Redis client ready!"));
 	client.on("reconnecting", () =>
-		console.log("Redis: Redis client reconnecting..."),
+		logger.info("Redis: Redis client reconnecting..."),
 	);
 	client.on("error", (error) =>
-		console.log("Redis: Redis client error", error),
+		logger.error(error, "Redis: Redis client error"),
 	);
-	client.on("connect", () => console.log("Redis: Redis client connected!"));
-	client.on("close", () => console.log("Redis: Redis client closed!"));
-	client.on("end", () => console.log("Redis: Redis client ended."));
+	client.on("connect", () => logger.info("Redis: Redis client connected!"));
+	client.on("close", () => logger.info("Redis: Redis client closed!"));
+	client.on("end", () => logger.info("Redis: Redis client ended."));
 
 	process.on("SIGTERM", () => {
-		console.log("Redis: Quitting as process exited");
+		logger.info("Redis: Quitting as process exited");
 		client.quit();
 	});
 	process.on("SIGINT", () => {
-		console.log("Redis: Quitting as process exited");
+		logger.info("Redis: Quitting as process exited");
 		client.quit();
 	});
 	process.on("exit", () => {
-		console.log("Redis: Quitting as process exited");
+		logger.info("Redis: Quitting as process exited");
 		client.quit();
 	});
 
