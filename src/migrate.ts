@@ -72,7 +72,7 @@ async function batchProcess({ cursor, standAloneClient, clusterClient, updateCur
 	logger.info({ writeResult }, "<== WRITE SUCCESS ==>");
 }
 
-async function main() {
+export async function migrate() {
 	// Initialize the redis clients
 	const standAloneClient = await initClient();
 	const clusterClient = await initClusterClient();
@@ -95,4 +95,3 @@ async function main() {
 	process.exit(0);
 }
 
-main();

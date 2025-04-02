@@ -1,11 +1,19 @@
 {
 	"name": "redis-scanner",
 	"version": "1.0.0",
-	"description": "A simple Redis scanner",
+	"description": "A simple command line script to analyse redis keys OR migrate keys from one redis instance to another",
+	"author": {
+		"name": "Abhinav Thapa",
+		"email": "abhinav.thapa@birdeye.com"
+	},
+	"license": "MIT",
 	"type": "module",
 	"scripts": {
-		"start": "tsx watch --env-file=.env src/index.ts",
-		"migrateKeys": "tsx watch --env-file=.env src/migrator.ts",
+		"start": "tsx --env-file=.env src/index.ts",
+		"migrate": "tsx --env-file=.env src/migrate.ts",
+		"migrate:dev": "tsx watch --env-file=.env src/migrate.ts",
+		"scan": "tsx --env-file=.env src/scan.ts",
+		"scan:dev": "tsx watch --env-file=.env src/scan.ts",
 		"format": "biome format --write ./src/**",
 		"lint": "biome lint --write --unsafe ./src/**"
 	},
@@ -15,8 +23,8 @@
 		"typescript": "^5.8.2"
 	},
 	"dependencies": {
+		"@inquirer/prompts": "^7.4.0",
 		"commander": "^13.1.0",
-		"inquirer": "^12.5.0",
 		"ioredis": "^5.6.0",
 		"pino": "^9.6.0",
 		"pino-pretty": "^13.0.0",
