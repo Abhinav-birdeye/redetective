@@ -55,7 +55,7 @@ async function batchProcess({ cursor, standAloneClient, clusterClient, updateCur
 	// Combine the keys, values and ttls into a single object and add it to the array
 	const oldKeysWithValue = keysToMigrate.map((item, index) => ({ key: item, value: valueOfKeysToMigrate?.[index], ttl: ttlOfKeysToMigrate?.[index] }));
 
-	logger.info({ value: oldKeysWithValue, keysFound: oldKeysWithValue?.length, cursor }, "<== KEYS TO MIGRATE ==>");
+	logger.info({ keysFound: oldKeysWithValue?.length, cursor }, "<== KEYS TO MIGRATE ==>");
 
 	// Add the setex command to the write pipeline
 	for (const key of oldKeysWithValue) {
