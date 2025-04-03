@@ -28,3 +28,5 @@ export const CLI_ACTIONS = {
 	DELETE_STANDLONE: "DELETE_STANDLONE",
 	DELETE_CLUSTER: "DELETE_CLUSTER",
 } as const;
+
+export type CLI_ACTION = typeof CLI_ACTIONS[keyof typeof CLI_ACTIONS];	
