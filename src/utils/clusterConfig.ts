@@ -20,6 +20,8 @@ export const CLUSTER_OPTIONS = {
 		password: process.env.REDIS_CLUSTER_PASSWORD,
 		keepAlive: 15000,
 	},
+	slotsRefreshTimeout: 10000,
+	slotsRefreshInterval: 10000,
 } as ClusterOptions;
 
 export async function initClusterClient() {

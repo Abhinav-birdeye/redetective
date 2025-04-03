@@ -21,11 +21,9 @@ async function commandLineProgram() {
 	});
 	if (answer === 'Scan') {
 		await scan();
-		process.exit(0);
 	}
 	else if (answer === 'Migrate') {
 		await migrate();
-		process.exit(0);
 	}
 	else {
 		console.log('Invalid choice');
