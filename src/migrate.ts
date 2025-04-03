@@ -57,6 +57,7 @@ async function batchProcess({ cursor, standAloneClient, clusterClient, updateCur
 	logger.info({ oldKeysWithValue, keysFound: oldKeysWithValue?.length, cursor }, "<== KEYS TO MIGRATE ==>");
 
 	// Add the setex command to the write promises
+	// note: pipelining does not work for clusters (need to specify specific node)
 	const writePromises = oldKeysWithValue.map((key) => clusterClient.setex(key.key, Number(key.ttl), key?.value as string,));
 	const { error: writeError } = await tryCatch(Promise.all(writePromises));
 	if (writeError) {
