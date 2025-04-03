@@ -2,7 +2,7 @@
 
 A command-line utility for analyzing Redis keys, migrating data between Redis instances, and managing Redis keys in both standalone and cluster environments.
 
-<img src="https://github.com/user-attachments/assets/d170350d-3006-4f74-9a69-e69766a98f4f" width="100%" height="auto"/>
+<img src="https://github.com/user-attachments/assets/e76d6c55-f9f6-459c-85ca-cc929e246905" width="100%" height="auto"/>
 <img src="https://github.com/user-attachments/assets/e122431c-1ad6-490e-8ff1-bae3f11059c5" width="100%" height="auto"/>
 
 ## Prerequisites
