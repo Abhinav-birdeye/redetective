@@ -14,12 +14,12 @@ A command-line utility for analyzing Redis keys, migrating data between Redis in
 
 2. Install PNPM:
 ```bash
-npm install -g pnpm
+curl -fsSL https://get.pnpm.io/install.sh | sh -
 ```
 
 3. Clone the repository and install dependencies:
 ```bash
-git clone <repository-url>
+git clone https://github.com/Abhinav-birdeye/redis-scanner.git
 cd redis-scanner
 pnpm install
 ```

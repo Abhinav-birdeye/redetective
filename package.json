@@ -10,10 +10,6 @@
 	"type": "module",
 	"scripts": {
 		"start": "tsx --env-file=.env src/index.ts",
-		"migrate": "tsx --env-file=.env src/migrate.ts",
-		"migrate:dev": "tsx watch --env-file=.env src/migrate.ts",
-		"scan": "tsx --env-file=.env src/scan.ts",
-		"scan:dev": "tsx watch --env-file=.env src/scan.ts",
 		"format": "biome format --write ./src/**",
 		"lint": "biome lint --write --unsafe ./src/**"
 	},
