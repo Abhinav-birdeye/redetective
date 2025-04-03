@@ -1,6 +1,7 @@
 import { select } from '@inquirer/prompts';
 import { scan } from './scan.js';
 import { migrate } from './migrate.js';
+import { deleteKeys } from './delete.js';
 
 process.on('uncaughtException', (error) => {
 	if (error instanceof Error && error.name === 'ExitPromptError') {
@@ -16,7 +17,9 @@ async function commandLineProgram() {
 		message: 'What do you want to do?',
 		choices: [
 			{ value: "Scan", name: "Scan", description: "Scan and analyse keys" },
-			{ value: "Migrate", name: "Migrate", description: "Migrate session keys to cluster" }],
+			{ value: "Migrate", name: "Migrate", description: "Migrate session keys to cluster" },
+			{ value: "Delete", name: "Delete", description: "Delete session keys from standalone instance" }
+		],
 		default: 'Scan'
 	});
 	if (answer === 'Scan') {
@@ -25,10 +28,14 @@ async function commandLineProgram() {
 	else if (answer === 'Migrate') {
 		await migrate();
 	}
+	else if (answer === 'Delete') {
+		await deleteKeys();
+	}
 	else {
 		console.log('Invalid choice');
 		process.exit(0);
 	}
+	process.exit(0);
 }
 
 commandLineProgram();
