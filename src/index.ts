@@ -23,7 +23,7 @@ async function commandLineProgram() {
 			{ value: CLI_ACTIONS.SCAN, name: "🕵  Scan standalone db", description: "Scan and analyse keys" },
 			{ value: CLI_ACTIONS.MIGRATE, name: "➡️  Migrate from standalone to cluster", description: "Migrate session keys to cluster" },
 			{ value: CLI_ACTIONS.DELETE_STANDLONE, name: "🗑  Delete keys from standalone", description: "Delete session keys from standalone instance" },
-			{ value: CLI_ACTIONS.DELETE_CLUSTER, name: "🗑  Delete keys from cluster", description: "Delete session keys from standalone instance" }
+			{ value: CLI_ACTIONS.DELETE_CLUSTER, name: "🗑  Delete keys from cluster", description: "Delete session keys from cluster" }
 		],
 		default: CLI_ACTIONS.SCAN,
 	});

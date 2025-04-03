@@ -8,9 +8,10 @@ interface BatchProcessOptions {
     cursor: number;
     standAloneClient: Redis;
     updateCursor: (value: number) => void;
+    updateKeysDeleted: (value: number) => void;
 }
 
-async function batchProcess({ cursor, standAloneClient, updateCursor }: BatchProcessOptions) {
+async function batchProcess({ cursor, standAloneClient, updateCursor, updateKeysDeleted }: BatchProcessOptions) {
     // Initialize the pipelines
     // pipelines are non-blocking and a better choice compared to
     // mget and mset commands for multiple key processing
@@ -48,7 +49,8 @@ async function batchProcess({ cursor, standAloneClient, updateCursor }: BatchPro
         logger.error(error, "Error deleting keys");
         return;
     }
-    logger.info(`<== ${keysToDelete?.length} keys deleted successfully  ==>`);
+    updateKeysDeleted(keysToDelete?.length);
+    return;
 }
 
 export async function deleteKeys() {
@@ -58,14 +60,15 @@ export async function deleteKeys() {
     // Initialize the variables
     let runs = 0;
     let cursor = 0;
+    let keysDeleted = 0;
 
     // Run the batch process until the cursor is 0
     do {
-        await batchProcess({ cursor, standAloneClient, updateCursor: (value: number) => { cursor = value; } });
+        await batchProcess({ cursor, standAloneClient, updateCursor: (value: number) => { cursor = value; }, updateKeysDeleted: (value: number) => { keysDeleted += value; } });
         runs++;
         await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for 500ms before running the next batch
-    } while (cursor !== 0 && runs < 1);
-
+    } while (cursor !== 0);
+    logger.info(`<== TOTAL ${keysDeleted} KEYS DELETED SUCCESSFULLY ==> `);
     // Quit the clients and exit the process gracefully
     standAloneClient.quit();
     logger.info("Exiting process gracefully..");

@@ -9,9 +9,10 @@ interface BatchProcessOptions {
     cursor: number;
     clusterClient: Cluster;
     updateCursor: (value: number) => void;
+    updateKeysDeleted: (value: number) => void;
 }
 
-async function batchProcess({ cursor, clusterClient, updateCursor }: BatchProcessOptions) {
+async function batchProcess({ cursor, clusterClient, updateCursor, updateKeysDeleted }: BatchProcessOptions) {
     // Initialize the pipelines
     // pipelines are non-blocking and a better choice compared to
     // mget and mset commands for multiple key processing
@@ -41,7 +42,8 @@ async function batchProcess({ cursor, clusterClient, updateCursor }: BatchProces
     }
 
     // Extract the values and ttls from the pipeline result
-    logger.info(`<== ${keysToDelete?.length} keys deleted successfully  ==>`);
+    updateKeysDeleted(keysToDelete?.length);
+    return;
 }
 
 export async function deleteClusterKeys() {
@@ -51,14 +53,15 @@ export async function deleteClusterKeys() {
     // Initialize the variables
     let runs = 0;
     let cursor = 0;
+    let keysDeleted = 0;
 
     // Run the batch process until the cursor is 0
     do {
-        await batchProcess({ cursor, clusterClient, updateCursor: (value: number) => { cursor = value; } });
+        await batchProcess({ cursor, clusterClient, updateCursor: (value: number) => { cursor = value; }, updateKeysDeleted: (value: number) => { keysDeleted += value; } });
         runs++;
         await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for 500ms before running the next batch
-    } while (cursor !== 0 && runs < 1);
-
+    } while (cursor !== 0);
+    logger.info(`<== TOTAL ${keysDeleted} KEYS DELETED SUCCESSFULLY ==> `);
     // Quit the clients and exit the process gracefully
     clusterClient.quit();
     logger.info("Exiting process gracefully..");
