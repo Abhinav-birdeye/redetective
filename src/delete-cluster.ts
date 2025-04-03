@@ -49,6 +49,7 @@ async function batchProcess({ cursor, clusterClient, updateCursor, updateKeysDel
 export async function deleteClusterKeys() {
     // Initialize the redis clients
     const clusterClient = await initClusterClient();
+    const startTime = Date.now();
 
     // Initialize the variables
     let runs = 0;
@@ -62,7 +63,11 @@ export async function deleteClusterKeys() {
         logger.info(`batchProcess: Run ${runs} completed, ${keysDeleted} keys deleted`);
         await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for 500ms before running the next batch
     } while (cursor !== 0);
-    logger.info(`Success: Total ${keysDeleted} keys deleted successfully`);
+    if (keysDeleted === 0) {
+        logger.warn("No keys found to delete in cluster");
+    } else {
+        logger.info(`Success: Total ${keysDeleted} keys deleted successfully in ${(Date.now() - startTime) / 1000} seconds`);
+    }
     // Quit the clients and exit the process gracefully
     clusterClient.quit();
     logger.info("Exiting process gracefully..");

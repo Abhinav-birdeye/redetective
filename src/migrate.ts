@@ -72,6 +72,7 @@ export async function migrate() {
 	// Initialize the redis clients
 	const standAloneClient = await initClient();
 	const clusterClient = await initClusterClient();
+	const startTime = Date.now();
 
 	// Initialize the variables
 	let runs = 0;
@@ -84,8 +85,12 @@ export async function migrate() {
 		runs++;
 		logger.info(`batchProcess: Run ${runs} completed, ${keysMigrated} keys migrated`);
 		await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for 500ms before running the next batch
-	} while (cursor !== 0 && runs < 1);
-	logger.info(`Sucess: Total ${keysMigrated} keys migrated successfully ==> `);
+	} while (cursor !== 0);
+	if (keysMigrated === 0) {
+		logger.warn("No keys found to migrate");
+	} else {
+		logger.info(`Sucess: Total ${keysMigrated} keys migrated successfully in ${(Date.now() - startTime) / 1000} seconds`);
+	}
 	// Quit the clients and exit the process gracefully
 	clusterClient.quit();
 	standAloneClient.quit();

@@ -56,6 +56,7 @@ async function batchProcess({ cursor, standAloneClient, updateCursor, updateKeys
 export async function deleteKeys() {
     // Initialize the redis clients
     const standAloneClient = await initClient();
+    const startTime = Date.now();
 
     // Initialize the variables
     let runs = 0;
@@ -69,7 +70,11 @@ export async function deleteKeys() {
         logger.info(`batchProcess: Run ${runs} completed, ${keysDeleted} keys deleted`);
         await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for 500ms before running the next batch
     } while (cursor !== 0);
-    logger.info(`Sucess: Total ${keysDeleted} keys deleted successfully`);
+    if (keysDeleted === 0) {
+        logger.warn("No keys found to delete in standalone");
+    } else {
+        logger.info(`Sucess: Total ${keysDeleted} keys deleted successfully in ${(Date.now() - startTime) / 1000} seconds`);
+    }
     // Quit the clients and exit the process gracefully
     standAloneClient.quit();
     logger.info("Exiting process gracefully..");
