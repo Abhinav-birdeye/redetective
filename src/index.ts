@@ -1,7 +1,6 @@
 import { select } from '@inquirer/prompts';
 import { scan } from './scan.js';
 import { migrate } from './migrate.js';
-import { logger } from './utils/logger.js';
 
 process.on('uncaughtException', (error) => {
 	if (error instanceof Error && error.name === 'ExitPromptError') {
