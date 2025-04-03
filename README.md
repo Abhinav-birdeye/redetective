@@ -1,6 +1,9 @@
 # Redis Scanner & Migration Utility
 
 A command-line utility for analyzing Redis keys, migrating data between Redis instances, and managing Redis keys in both standalone and cluster environments.
+![image](https://github.com/user-attachments/assets/e971fb41-6377-43de-9ee3-c4182bcd3cc4)
+![image](https://github.com/user-attachments/assets/e122431c-1ad6-490e-8ff1-bae3f11059c5)
+
 
 ## Prerequisites
 
