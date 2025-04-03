@@ -59,9 +59,10 @@ export async function deleteClusterKeys() {
     do {
         await batchProcess({ cursor, clusterClient, updateCursor: (value: number) => { cursor = value; }, updateKeysDeleted: (value: number) => { keysDeleted += value; } });
         runs++;
+        logger.info(`batchProcess: Run ${runs} completed, ${keysDeleted} keys deleted`);
         await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for 500ms before running the next batch
     } while (cursor !== 0);
-    logger.info(`<== TOTAL ${keysDeleted} KEYS DELETED SUCCESSFULLY ==> `);
+    logger.info(`Success: Total ${keysDeleted} keys deleted successfully`);
     // Quit the clients and exit the process gracefully
     clusterClient.quit();
     logger.info("Exiting process gracefully..");

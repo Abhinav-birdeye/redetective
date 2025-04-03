@@ -82,9 +82,10 @@ export async function migrate() {
 	do {
 		await batchProcess({ cursor, standAloneClient, clusterClient, updateCursor: (value: number) => { cursor = value; }, updateKeysMigrated: (value: number) => { keysMigrated += value; } });
 		runs++;
+		logger.info(`batchProcess: Run ${runs} completed, ${keysMigrated} keys migrated`);
 		await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for 500ms before running the next batch
 	} while (cursor !== 0 && runs < 1);
-	logger.info(`<== TOTAL ${keysMigrated} KEYS MIGRATED SUCCESSFULLY ==> `);
+	logger.info(`Sucess: Total ${keysMigrated} keys migrated successfully ==> `);
 	// Quit the clients and exit the process gracefully
 	clusterClient.quit();
 	standAloneClient.quit();
