@@ -15,7 +15,6 @@ async function batchProcess({ cursor, standAloneClient, clusterClient, updateCur
 	// Initialize the pipelines
 	// pipelines are non-blocking and a better choice compared to
 	// mget and mset commands for multiple key processing
-	const writePipeline = clusterClient.pipeline();
 	const readValuePipeline = standAloneClient.pipeline();
 	const ttlPipeline = standAloneClient.pipeline();
 
@@ -55,21 +54,16 @@ async function batchProcess({ cursor, standAloneClient, clusterClient, updateCur
 	// Combine the keys, values and ttls into a single object and add it to the array
 	const oldKeysWithValue = keysToMigrate.map((item, index) => ({ key: item, value: valueOfKeysToMigrate?.[index], ttl: ttlOfKeysToMigrate?.[index] }));
 
-	logger.info({ keysFound: oldKeysWithValue?.length, cursor }, "<== KEYS TO MIGRATE ==>");
+	logger.info({ oldKeysWithValue, keysFound: oldKeysWithValue?.length, cursor }, "<== KEYS TO MIGRATE ==>");
 
-	// Add the setex command to the write pipeline
-	for (const key of oldKeysWithValue) {
-		writePipeline.setex(key.key, key?.value as string, key.ttl as number);
-	}
-
-	// Execute the write pipeline
-	const writeResult = await writePipeline.exec();
-	const writeError = writeResult?.find((item) => item?.[0] !== null);
+	// Add the setex command to the write promises
+	const writePromises = oldKeysWithValue.map((key) => clusterClient.setex(key.key, Number(key.ttl), key?.value as string,));
+	const { error: writeError } = await tryCatch(Promise.all(writePromises));
 	if (writeError) {
 		logger.error(writeError, "Error writing keys");
 		return;
 	}
-	logger.info({ writeResult }, "<== WRITE SUCCESS ==>");
+	logger.info("<== WRITE SUCCESS ==>");
 }
 
 export async function migrate() {
