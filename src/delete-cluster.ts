@@ -1,22 +1,23 @@
-import type { Redis } from "ioredis";
+import type { Cluster, Redis } from "ioredis";
 import { initClient } from "./utils/config.js";
 import { logger } from "./utils/logger.js";
 import { tryCatch } from "./utils/try-catch.js";
+import { initClusterClient } from "./utils/clusterConfig.js";
 import { SCAN_BATCH_SIZE } from "./utils/constants.js";
 
 interface BatchProcessOptions {
     cursor: number;
-    standAloneClient: Redis;
+    clusterClient: Cluster;
     updateCursor: (value: number) => void;
 }
 
-async function batchProcess({ cursor, standAloneClient, updateCursor }: BatchProcessOptions) {
+async function batchProcess({ cursor, clusterClient, updateCursor }: BatchProcessOptions) {
     // Initialize the pipelines
     // pipelines are non-blocking and a better choice compared to
     // mget and mset commands for multiple key processing
-    const deletePipeline = standAloneClient.pipeline();
+
     // Read all the keys that match the given pattern
-    const [nextCursor, keysToDelete] = await standAloneClient.scan(
+    const [nextCursor, keysToDelete] = await clusterClient.scan(
         cursor,
         "MATCH",
         "sess:*",
@@ -30,30 +31,22 @@ async function batchProcess({ cursor, standAloneClient, updateCursor }: BatchPro
     }
 
     // Add the delete commands to the pipeline
-    for (const key of keysToDelete) {
-        deletePipeline.del(key);
-    }
+    const deletePromises = keysToDelete?.map((key) => clusterClient.del(key));
 
     // Execute the pipeline
-    const { data: pipelineResult, error: pipelineError } = await tryCatch(deletePipeline.exec());
+    const { error: pipelineError } = await tryCatch(Promise.all(deletePromises));
     if (pipelineError) {
         logger.error(pipelineError, "Error in pipeline deleting keys");
         return;
     }
 
     // Extract the values and ttls from the pipeline result
-
-    const error = pipelineResult?.find((item) => item?.[0] !== null);
-    if (error) {
-        logger.error(error, "Error deleting keys");
-        return;
-    }
     logger.info(`<== ${keysToDelete?.length} keys deleted successfully  ==>`);
 }
 
-export async function deleteKeys() {
+export async function deleteClusterKeys() {
     // Initialize the redis clients
-    const standAloneClient = await initClient();
+    const clusterClient = await initClusterClient();
 
     // Initialize the variables
     let runs = 0;
@@ -61,13 +54,13 @@ export async function deleteKeys() {
 
     // Run the batch process until the cursor is 0
     do {
-        await batchProcess({ cursor, standAloneClient, updateCursor: (value: number) => { cursor = value; } });
+        await batchProcess({ cursor, clusterClient, updateCursor: (value: number) => { cursor = value; } });
         runs++;
         await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for 500ms before running the next batch
     } while (cursor !== 0 && runs < 1);
 
     // Quit the clients and exit the process gracefully
-    standAloneClient.quit();
+    clusterClient.quit();
     logger.info("Exiting process gracefully..");
     process.exit(0);
 }

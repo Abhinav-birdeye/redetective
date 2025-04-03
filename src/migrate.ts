@@ -64,7 +64,7 @@ async function batchProcess({ cursor, standAloneClient, clusterClient, updateCur
 		logger.error(writeError, "Error writing keys");
 		return;
 	}
-	logger.info("<== WRITE SUCCESS ==>");
+	logger.info(`<== ${oldKeysWithValue?.length} keys migrated successfully  ==>`);
 }
 
 export async function migrate() {
