@@ -12,7 +12,13 @@ process.on('uncaughtException', (error) => {
 });
 
 async function commandLineProgram() {
-	const answer = await select({ message: 'What do you want to do?', choices: [{ value: "Scan", name: "Scan", description: "Scan and analyse keys" }, { value: "Migrate", name: "Migrate", description: "Migrate session keys to cluster" }], default: 'Scan' });
+	const answer = await select({
+		message: 'What do you want to do?',
+		choices: [
+			{ value: "Scan", name: "Scan", description: "Scan and analyse keys" },
+			{ value: "Migrate", name: "Migrate", description: "Migrate session keys to cluster" }],
+		default: 'Scan'
+	});
 	if (answer === 'Scan') {
 		await scan();
 		process.exit(0);
