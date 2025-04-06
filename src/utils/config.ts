@@ -13,8 +13,8 @@ export const redisConfig = {
 	connectTimeout: 10000,
 } satisfies RedisOptions;
 
-export async function initClient() {
-	const client = new Redis(redisConfig);
+export async function initClient(extraOptions?: RedisOptions) {
+	const client = new Redis({ ...redisConfig, ...extraOptions });
 	client.on("connecting", () =>
 		logger.info(`Redis: Redis client connecting to ${process.env.REDIS_HOST}...`),
 	);

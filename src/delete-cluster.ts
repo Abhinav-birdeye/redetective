@@ -1,5 +1,4 @@
-import type { Cluster, Redis } from "ioredis";
-import { initClient } from "./utils/config.js";
+import type { Cluster } from "ioredis";
 import { logger } from "./utils/logger.js";
 import { tryCatch } from "./utils/try-catch.js";
 import { initClusterClient } from "./utils/clusterConfig.js";
