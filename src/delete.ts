@@ -1,17 +1,12 @@
-import type { Redis } from "ioredis";
 import { initClient } from "./utils/config.js";
 import { logger } from "./utils/logger.js";
 import { tryCatch } from "./utils/try-catch.js";
 import { SCAN_BATCH_SIZE } from "./utils/constants.js";
+import type { StandaloneBatchProcessOptions } from "./types/index.js";
 
-interface BatchProcessOptions {
-    cursor: number;
-    standAloneClient: Redis;
-    updateCursor: (value: number) => void;
-    updateKeysDeleted: (value: number) => void;
-}
 
-async function batchProcess({ cursor, standAloneClient, updateCursor, updateKeysDeleted }: BatchProcessOptions) {
+
+async function batchProcess({ cursor, standAloneClient, updateCursor, updateKeysDeleted }: StandaloneBatchProcessOptions) {
     // Initialize the pipelines
     // pipelines are non-blocking and a better choice compared to
     // mget and mset commands for multiple key processing

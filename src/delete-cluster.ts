@@ -1,17 +1,12 @@
-import type { Cluster } from "ioredis";
 import { logger } from "./utils/logger.js";
 import { tryCatch } from "./utils/try-catch.js";
 import { initClusterClient } from "./utils/clusterConfig.js";
 import { SCAN_BATCH_SIZE } from "./utils/constants.js";
+import type { ClusterBatchProcessOptions } from "./types/index.js";
 
-interface BatchProcessOptions {
-    cursor: number;
-    clusterClient: Cluster;
-    updateCursor: (value: number) => void;
-    updateKeysDeleted: (value: number) => void;
-}
 
-async function batchProcess({ cursor, clusterClient, updateCursor, updateKeysDeleted }: BatchProcessOptions) {
+
+async function batchProcess({ cursor, clusterClient, updateCursor, updateKeysDeleted }: ClusterBatchProcessOptions) {
     // Initialize the pipelines
     // pipelines are non-blocking and a better choice compared to
     // mget and mset commands for multiple key processing

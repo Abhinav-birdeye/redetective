@@ -4,11 +4,8 @@ import { logger } from "./utils/logger.js";
 import { initClient } from "./utils/config.js";
 import { tryCatch } from "./utils/try-catch.js";
 import { BroadcastChannel } from "node:worker_threads";
+import type { BroadcastEvent } from "./types/index.js";
 
-interface BroadcastEvent {
-    message: string;
-    id: number;
-}
 
 const maxQueue = 4;
 const workers = new Set<number>();
@@ -39,7 +36,7 @@ export async function multithread() {
     });
 
     channel.onmessage = (event: unknown) => {
-        const eventData = event?.data as BroadcastEvent;
+        const { data: eventData } = event as BroadcastEvent;
         logger.info({ size: workers?.size, eventData }, "Worker Message Received");
         if (eventData?.message === "WORKER_START") {
             workers.add(eventData?.id);

@@ -4,16 +4,10 @@ import { initClient } from "./utils/config.js";
 import { logger } from "./utils/logger.js";
 import { tryCatch } from "./utils/try-catch.js";
 import { SCAN_BATCH_SIZE } from "./utils/constants.js";
+import type { MigrateBatchProcessOptions } from "./types/index.js";
 
-interface BatchProcessOptions {
-	cursor: number;
-	standAloneClient: Redis;
-	clusterClient: Cluster;
-	updateCursor: (value: number) => void;
-	updateKeysMigrated: (value: number) => void;
-}
 
-async function batchProcess({ cursor, standAloneClient, clusterClient, updateCursor, updateKeysMigrated }: BatchProcessOptions) {
+async function batchProcess({ cursor, standAloneClient, clusterClient, updateCursor, updateKeysMigrated }: MigrateBatchProcessOptions) {
 	// Initialize the pipelines
 	// pipelines are non-blocking and a better choice compared to
 	// mget and mset commands for multiple key processing
