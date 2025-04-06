@@ -24,8 +24,8 @@ export const CLUSTER_OPTIONS = {
 	slotsRefreshInterval: 10000,
 } as ClusterOptions;
 
-export async function initClusterClient() {
-	const client = new Cluster(CLUSTER_NODES, CLUSTER_OPTIONS);
+export async function initClusterClient(extraOptions: ClusterOptions = {}) {
+	const client = new Cluster(CLUSTER_NODES, { ...CLUSTER_OPTIONS, ...extraOptions });
 	client.on("connecting", () =>
 		logger.info(`Redis Cluster: Redis client connecting to ${process.env.REDIS_CLUSTER_HOST}...`),
 	);

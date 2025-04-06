@@ -1,7 +1,7 @@
 // CONSTANTS
 
 export const DAYS_IN_SECONDS = 86400;
-export const SCAN_BATCH_SIZE = 3000;
+export const SCAN_BATCH_SIZE = 5000;
 export const SELECTED_DB = Number(process.env.REDIS_DB);
 export const DAYS_THRESHOLD = 14;
 export const DIRECTORY = `result/db${SELECTED_DB}/`;
