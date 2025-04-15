@@ -1,14 +1,15 @@
 import type { RedisOptions } from "ioredis";
 import { Redis } from "ioredis";
 import { logger } from "./logger.js";
+import env from "./env.js";
 
 export const redisConfig = {
-	host: process.env.REDIS_HOST,
-	port: Number(process.env.REDIS_PORT),
-	password: process.env.REDIS_PASSWORD,
+	host: env.client.host,
+	port: env.client.port,
+	password: env.client.password,
 	maxRetriesPerRequest: 1,
 	enableReadyCheck: true,
-	db: Number(process.env.REDIS_DB),
+	db: env.client.db,
 	commandTimeout: 60000,
 	connectTimeout: 10000,
 } satisfies RedisOptions;
@@ -16,7 +17,7 @@ export const redisConfig = {
 export async function initClient() {
 	const client = new Redis(redisConfig);
 	client.on("connecting", () =>
-		logger.info(`Redis: Redis client connecting to ${process.env.REDIS_HOST}...`),
+		logger.info(`Redis: Redis client connecting to HOST=${env.client.host} DB=${env.client.db}...`),
 	);
 	client.on("ready", () => logger.info("Redis: Redis client ready!"));
 	client.on("reconnecting", () =>

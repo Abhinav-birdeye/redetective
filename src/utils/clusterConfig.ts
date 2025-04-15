@@ -2,11 +2,12 @@ import { Cluster } from "ioredis";
 
 import type { ClusterNode, ClusterOptions } from "ioredis";
 import { logger } from "./logger.js";
+import env from "./env.js";
 
 export const CLUSTER_NODES = [
 	{
-		host: process.env.REDIS_CLUSTER_HOST,
-		port: Number(process.env.REDIS_CLUSTER_PORT),
+		host: env.cluster.host,
+		port: env.cluster.port,
 	},
 ] as ClusterNode[];
 
@@ -17,7 +18,7 @@ export const CLUSTER_OPTIONS = {
 		commandTimeout: 60000,
 		tls: {},
 		enableAutoPipelining: true,
-		password: process.env.REDIS_CLUSTER_PASSWORD,
+		password: env.cluster.password,
 		keepAlive: 15000,
 	},
 	slotsRefreshTimeout: 10000,
@@ -27,7 +28,7 @@ export const CLUSTER_OPTIONS = {
 export async function initClusterClient() {
 	const client = new Cluster(CLUSTER_NODES, CLUSTER_OPTIONS);
 	client.on("connecting", () =>
-		logger.info(`Redis Cluster: Redis client connecting to ${process.env.REDIS_CLUSTER_HOST}...`),
+		logger.info(`Redis Cluster: Redis client connecting to ${env.cluster.host}...`),
 	);
 	client.on("ready", () => logger.info("Redis Cluster: Redis client ready!"));
 	client.on("reconnecting", () =>
