@@ -1,6 +1,5 @@
-# Redetective
-
 ![image](https://github.com/user-attachments/assets/ff3f3bc6-9a8e-450a-996f-dfb0d7d931e5)
+# Redetective
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 
