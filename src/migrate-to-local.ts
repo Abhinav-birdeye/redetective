@@ -2,7 +2,7 @@ import type { Redis } from "ioredis";
 import { initClient } from "./utils/config.js";
 import { logger } from "./utils/logger.js";
 import { tryCatch } from "./utils/try-catch.js";
-import { SCAN_BATCH_SIZE } from "./utils/constants.js";
+import { MIGRATE_KEY_PATTERN, SCAN_BATCH_SIZE } from "./utils/constants.js";
 import { initLocalClient } from "./utils/localConfig.js";
 
 interface BatchProcessOptions {
@@ -29,7 +29,7 @@ async function batchProcess({
 	const [nextCursor, keysToMigrate] = await standAloneClient.scan(
 		cursor,
 		"MATCH",
-		"sess:*",
+		MIGRATE_KEY_PATTERN,
 		"COUNT",
 		SCAN_BATCH_SIZE,
 	);
