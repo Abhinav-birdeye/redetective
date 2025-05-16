@@ -1,4 +1,5 @@
-# Redis Scanner & Migration Utility
+# Redetective
+![image](https://github.com/user-attachments/assets/ff3f3bc6-9a8e-450a-996f-dfb0d7d931e5)
 
 A command-line utility for analyzing Redis keys, migrating data between Redis instances, and managing Redis keys in both standalone and cluster environments.
 
