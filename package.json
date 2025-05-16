@@ -1,7 +1,7 @@
 {
-	"name": "redis-scanner",
+	"name": "redetective",
 	"version": "1.0.0",
-	"description": "A simple command line script to analyse redis keys OR migrate keys from one redis instance to another",
+	"description": "A simple command line script to analyse old version redis keys OR migrate keys from one redis instance to another",
 	"author": {
 		"name": "Abhinav Thapa",
 		"email": "abhinav.thapa@birdeye.com"

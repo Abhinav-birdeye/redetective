@@ -2,7 +2,7 @@ import type { Redis } from "ioredis";
 import { initClient } from "./utils/config.js";
 import { logger } from "./utils/logger.js";
 import { tryCatch } from "./utils/try-catch.js";
-import { SCAN_BATCH_SIZE } from "./utils/constants.js";
+import { DELETE_KEY_PATTERN, SCAN_BATCH_SIZE } from "./utils/constants.js";
 
 interface BatchProcessOptions {
     cursor: number;
@@ -20,7 +20,7 @@ async function batchProcess({ cursor, standAloneClient, updateCursor, updateKeys
     const [nextCursor, keysToDelete] = await standAloneClient.scan(
         cursor,
         "MATCH",
-        "sess:*",
+        DELETE_KEY_PATTERN,
         "COUNT",
         SCAN_BATCH_SIZE,
     );

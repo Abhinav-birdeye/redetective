@@ -14,8 +14,8 @@ export async function flattenResults() {
         process.exit();
     }
     logger.info("PARSING FILES...");
-    const formattedNoTTLData = JSON.parse(noTTLData) as [];
-    const formattedOldKeysData = JSON.parse(oldKeysData) as [];
+    const formattedNoTTLData = JSON.parse(noTTLData.replace("\n", "")) as [];
+    const formattedOldKeysData = JSON.parse(oldKeysData.replace("\n", "")) as [];
     logger.info("FLATTENING FILES...");
     const flattenedNoTTL = formattedNoTTLData?.flat();
     const flattenedOldKeys = formattedOldKeysData?.flat();

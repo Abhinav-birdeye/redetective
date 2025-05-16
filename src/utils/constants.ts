@@ -5,7 +5,6 @@ import env from "./env.js";
 export const DAYS_IN_SECONDS = 86400;
 export const SCAN_BATCH_SIZE = 5000;
 export const BATCH_PROCES_DELAY = 1 * 1000; //seconds
-// export const DELETE_KEY_PATTERN = "business.core:*";
 export const DELETE_KEY_PATTERN = "REVIEWS_BY_API_KEY*";
 export const SELECTED_DB = env.client.db;
 export const DAYS_THRESHOLD = 14;
@@ -29,7 +28,9 @@ export const CONSTANTS = {
 
 export const CLI_ACTIONS = {
 	SCAN: "SCAN",
+	FLATTEN: "FLATTEN",
 	MIGRATE: "MIGRATE",
+	MIGRATE_STANDALONE: "MIGRATE_STANDALONE",
 	DELETE_STANDLONE: "DELETE_STANDLONE",
 	DELETE_CLUSTER: "DELETE_CLUSTER",
 } as const;
