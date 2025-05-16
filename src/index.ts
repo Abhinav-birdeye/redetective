@@ -1,12 +1,12 @@
 import { select } from "@inquirer/prompts";
-import { scan } from "./scan.js";
-import { migrate } from "./migrate.js";
-import { deleteKeys } from "./delete.js";
-import { CLI_ACTIONS } from "./utils/constants.js";
-import { deleteClusterKeys } from "./delete-cluster.js";
-import { flattenResults } from "./utils/flatten.js";
-import { migrateToLocal } from "./migrate-to-local.js";
-import { scanSize } from "./scan-size.js";
+import { scan } from "@/scan.js";
+import { migrate } from "@/migrate.js";
+import { deleteKeys } from "@/delete.js";
+import { CLI_ACTIONS } from "@/utils/constants.js";
+import { deleteClusterKeys } from "@/delete-cluster.js";
+import { flattenResults } from "@/utils/flatten.js";
+import { migrateToLocal } from "@/migrate-to-local.js";
+import { scanSize } from "@/scan-size.js";
 
 process.on("uncaughtException", (error) => {
 	if (error instanceof Error && error.name === "ExitPromptError") {

@@ -6,7 +6,7 @@ import {
 	NO_TTL_KEYS_FILENAME_TXT,
 	OLD_KEYS_FILENAME_JSON,
 	OLD_KEYS_FILENAME_TXT,
-} from "./constants.js";
+} from "@/utils/constants.js";
 
 /**
  * Ensures that a directory exists, creating it if necessary
@@ -68,4 +68,13 @@ export const byteSize = (str: string) => new Blob([str])?.size;
  */
 export function bytesToMB(bytes: number) {
 	return bytes / (1024 * 1024);
+}
+
+/**
+ * Pauses execution for a specified number of milliseconds
+ * @param {number} ms - The number of milliseconds to sleep
+ * @returns {Promise<void>}
+ */
+export async function sleep(ms: number): Promise<void> {
+	return new Promise((resolve) => setTimeout(resolve, ms));
 }

@@ -1,7 +1,7 @@
 import type { RedisOptions } from "ioredis";
 import { Redis } from "ioredis";
-import { logger } from "./logger.js";
-import env from "./env.js";
+import { logger } from "@/utils/logger.js";
+import env from "@/utils/env.js";
 
 /**
  * Redis client configuration options

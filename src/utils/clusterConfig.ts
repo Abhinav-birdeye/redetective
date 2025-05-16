@@ -1,8 +1,8 @@
 import { Cluster } from "ioredis";
 
 import type { ClusterNode, ClusterOptions } from "ioredis";
-import { logger } from "./logger.js";
-import env from "./env.js";
+import { logger } from "@/utils/logger.js";
+import env from "@/utils/env.js";
 
 /**
  * Redis cluster node configuration

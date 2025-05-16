@@ -1,16 +1,17 @@
 import { createWriteStream } from "node:fs";
-import { initClient } from "./utils/config.js";
+import { initClient } from "@/utils/config.js";
 import {
 	DIRECTORY,
 	KEY_SIZE_FILENAME_TXT,
 	SCAN_BATCH_SIZE,
-} from "./utils/constants.js";
-import { logger } from "./utils/logger.js";
+} from "@/utils/constants.js";
+import { logger } from "@/utils/logger.js";
 import {
 	byteSize,
 	bytesToMB,
 	ensureDirectoryExistence,
-} from "./utils/helpers.js";
+	sleep,
+} from "@/utils/helpers.js";
 
 ensureDirectoryExistence(DIRECTORY);
 
@@ -59,7 +60,7 @@ export async function scanSize() {
 		currentSize = (await batchProcess()) ?? 0;
 		totalSize = totalSize + currentSize;
 		runs++;
-		await new Promise((resolve) => setTimeout(resolve, 500));
+		await sleep(500);
 	} while (cursor !== 0);
 	const totalSizeInMB = bytesToMB(totalSize);
 	logger.info({ totalSize: totalSizeInMB }, "Total size of keys in MB");

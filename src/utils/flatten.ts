@@ -2,8 +2,8 @@ import { writeFile, readFile } from "node:fs/promises";
 import {
 	NO_TTL_KEYS_FILENAME_JSON,
 	OLD_KEYS_FILENAME_JSON,
-} from "./constants.js";
-import { logger } from "./logger.js";
+} from "@/utils/constants.js";
+import { logger } from "@/utils/logger.js";
 
 /**
  * Flattens and processes Redis key data from JSON files

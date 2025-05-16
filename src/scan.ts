@@ -1,29 +1,32 @@
 import { createWriteStream } from "node:fs";
-import { initClient } from "./utils/config.js";
+import { initClient } from "@/utils/config.js";
 import {
 	DIRECTORY,
 	NO_TTL_KEYS_FILENAME_TXT,
 	OLD_KEYS_FILENAME_TXT,
 	SCAN_BATCH_SIZE,
 	SELECTED_DB,
-} from "./utils/constants.js";
-import { logger } from "./utils/logger.js";
+} from "@/utils/constants.js";
+import { logger } from "@/utils/logger.js";
 import {
 	convertSecondsToDays,
 	ensureDirectoryExistence,
 	formatOutputToJson,
-} from "./utils/helpers.js";
+	sleep,
+} from "@/utils/helpers.js";
 
 ensureDirectoryExistence(DIRECTORY);
 
 export async function scan() {
 	const client = await initClient();
-	let cursor = 0;
-	let runs = 0;
 	const log1 = createWriteStream(`${NO_TTL_KEYS_FILENAME_TXT}`, {
 		flags: "a",
 	});
 	const log2 = createWriteStream(`${OLD_KEYS_FILENAME_TXT}`, { flags: "a" });
+
+	let cursor = 0;
+	let runs = 0;
+
 	async function batchProcess() {
 		const startTime = Date.now();
 		const scanResult = await client.scan(cursor, "COUNT", SCAN_BATCH_SIZE);
@@ -79,7 +82,7 @@ export async function scan() {
 	do {
 		await batchProcess();
 		runs++;
-		await new Promise((resolve) => setTimeout(resolve, 500));
+		await sleep(500);
 	} while (cursor !== 0);
 	log1.end();
 	log2.end();

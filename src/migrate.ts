@@ -1,9 +1,10 @@
 import type { Cluster, Redis } from "ioredis";
-import { initClusterClient } from "./utils/clusterConfig.js";
-import { initClient } from "./utils/config.js";
-import { logger } from "./utils/logger.js";
-import { tryCatch } from "./utils/try-catch.js";
-import { MIGRATE_KEY_PATTERN, SCAN_BATCH_SIZE } from "./utils/constants.js";
+import { initClusterClient } from "@/utils/clusterConfig.js";
+import { initClient } from "@/utils/config.js";
+import { logger } from "@/utils/logger.js";
+import { tryCatch } from "@/utils/try-catch.js";
+import { MIGRATE_KEY_PATTERN, SCAN_BATCH_SIZE } from "@/utils/constants.js";
+import { sleep } from "@/utils/helpers.js";
 
 interface BatchProcessOptions {
 	cursor: number;
@@ -112,7 +113,7 @@ export async function migrate() {
 		logger.info(
 			`batchProcess: Run ${runs} completed, ${keysMigrated} keys migrated`,
 		);
-		await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for 500ms before running the next batch
+		await sleep(500); // Wait for 500ms before running the next batch
 	} while (cursor !== 0);
 	if (keysMigrated === 0) {
 		logger.warn("No keys found to migrate");
