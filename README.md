@@ -1,6 +1,8 @@
 # Redetective
 ![image](https://github.com/user-attachments/assets/ff3f3bc6-9a8e-450a-996f-dfb0d7d931e5)
 
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
+
 A command-line utility for analyzing Redis keys, migrating data between Redis instances, and managing Redis keys in both standalone and cluster environments.
 
 <img src="https://github.com/user-attachments/assets/e76d6c55-f9f6-459c-85ca-cc929e246905" width="100%" height="auto"/>
