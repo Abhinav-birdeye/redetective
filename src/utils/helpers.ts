@@ -29,3 +29,8 @@ export async function formatOutputToJson() {
         unlink(`${OLD_KEYS_FILENAME_TXT}`),
     ]);
 }
+
+export const byteSize = (str: string) => new Blob([str])?.size;
+export function bytesToMB(bytes: number) {
+    return bytes / (1024 * 1024);
+}

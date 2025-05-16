@@ -11,6 +11,7 @@ export const DAYS_THRESHOLD = 14;
 export const DIRECTORY = `result/db${SELECTED_DB}/`;
 export const OLD_KEYS_FILENAME_TXT = `${DIRECTORY}${SELECTED_DB}-keys-older-${DAYS_THRESHOLD}-days.txt`;
 export const NO_TTL_KEYS_FILENAME_TXT = `${DIRECTORY}${SELECTED_DB}-keys-no-ttl.txt`;
+export const KEY_SIZE_FILENAME_TXT = `${DIRECTORY}${SELECTED_DB}-size.txt`;
 export const OLD_KEYS_FILENAME_JSON = `${DIRECTORY}${SELECTED_DB}-keys-older-${DAYS_THRESHOLD}-days.json`;
 export const NO_TTL_KEYS_FILENAME_JSON = `${DIRECTORY}${SELECTED_DB}-keys-no-ttl.json`;
 
