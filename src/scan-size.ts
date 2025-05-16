@@ -14,7 +14,7 @@ import {
 
 ensureDirectoryExistence(DIRECTORY);
 
-export async function scan() {
+export async function scanSize() {
 	const client = await initClient();
 	let cursor = 0;
 	let runs = 0;

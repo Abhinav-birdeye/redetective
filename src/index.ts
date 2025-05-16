@@ -6,6 +6,7 @@ import { CLI_ACTIONS } from "./utils/constants.js";
 import { deleteClusterKeys } from "./delete-cluster.js";
 import { flattenResults } from "./utils/flatten.js";
 import { migrateToLocal } from "./migrate-to-local.js";
+import { scanSize } from "./scan-size.js";
 
 process.on("uncaughtException", (error) => {
 	if (error instanceof Error && error.name === "ExitPromptError") {
@@ -24,6 +25,11 @@ async function commandLineProgram() {
 				value: CLI_ACTIONS.SCAN,
 				name: "🕵  Scan standalone db",
 				description: "Scan and analyse keys",
+			},
+			{
+				value: CLI_ACTIONS.SCAN_SIZE,
+				name: "🕵  Scan size of keys in standalone db",
+				description: "Scan and calculate total size occupied by keys",
 			},
 			{
 				value: CLI_ACTIONS.FLATTEN,
@@ -57,6 +63,9 @@ async function commandLineProgram() {
 	switch (answer) {
 		case "SCAN":
 			await scan();
+			break;
+		case "SCAN_SIZE":
+			await scanSize();
 			break;
 		case "MIGRATE":
 			await migrate();
