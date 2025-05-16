@@ -39,17 +39,17 @@ async function commandLineProgram() {
 			{
 				value: CLI_ACTIONS.MIGRATE,
 				name: "➡️  Migrate from standalone to cluster",
-				description: "Migrate session keys to cluster",
+				description: "Migrate keys to cluster",
 			},
 			{
 				value: CLI_ACTIONS.DELETE_STANDLONE,
 				name: "🗑  Delete keys from standalone",
-				description: "Delete session keys from standalone instance",
+				description: "Delete keys from standalone instance",
 			},
 			{
 				value: CLI_ACTIONS.DELETE_CLUSTER,
 				name: "🗑  Delete keys from cluster",
-				description: "Delete session keys from cluster",
+				description: "Delete keys from cluster",
 			},
 			{
 				value: CLI_ACTIONS.MIGRATE_STANDALONE,
