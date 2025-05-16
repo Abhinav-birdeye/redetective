@@ -7,4 +7,5 @@ export const logger = pino.pino({
 			colorize: true,
 		},
 	},
+	redact: ["*.password", "*.REDIS_PASSWORD", "*.REDIS_CLUSTER_PASSWORD"], // Redact sensitive fields
 });
